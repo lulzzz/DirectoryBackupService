@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net461</TargetFrameworks>
+    <AssemblyName>ConnelHooley.DirectoryBackupService.S3</AssemblyName>
+    <RootNamespace>ConnelHooley.DirectoryBackupService.S3</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="4.8.1" />
+    <PackageReference Include="AWSSDK.S3" Version="3.3.18.2" />
+    <PackageReference Include="NLog" Version="4.5.5" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+    <PackageReference Include="Topshelf" Version="4.0.4" />
+    <PackageReference Include="Topshelf.NLog" Version="4.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DirectoryBackupService.Shared\DirectoryBackupService.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
