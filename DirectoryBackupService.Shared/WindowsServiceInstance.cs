@@ -1,21 +1,39 @@
 ﻿using Akka.Actor;
-using Akka.Configuration;
 using Akka.DI.AutoFac;
 using Autofac;
 using DirectoryBackupService.Shared.Actors;
+using System.Text.RegularExpressions;
+using Topshelf.Runtime;
 
 namespace ConnelHooley.DirectoryBackupService.Shared
 {
-    internal class WindowsServiceInstance
+    internal sealed class WindowsServiceInstance
     {
+        private readonly HostSettings _hostSettings;
+        private readonly IContainer _iocContainer;
+
         private ActorSystem _actorSystem;
         private IActorRef _rootActor;
-
-        public void Start(string actorSystemName, IContainer container)
+        
+        public WindowsServiceInstance(HostSettings hostSettings, IContainer iocContainer)
         {
-            _actorSystem = ActorSystem.Create(actorSystemName, Logging.GetAkkaConfig());
-            var resolver = new AutoFacDependencyResolver(container, _actorSystem);
+            _hostSettings = hostSettings;
+            _iocContainer = iocContainer;
+        }
+
+        public void Start()
+        {
+            _actorSystem = ActorSystem.Create(ParseActorSystemName(), Logging.GetAkkaLoggingConfig());
+            var resolver = new AutoFacDependencyResolver(_iocContainer, _actorSystem);
             _rootActor = _actorSystem.ActorOf(resolver.Create<DirectoryActor>());
+
+            string ParseActorSystemName()
+            {
+                var hyphonated = Regex.Replace(_hostSettings.ServiceName, @"[\s|_]+", "-");
+                var filtered = Regex.Replace(hyphonated, @"[^A-z0-9]", string.Empty);
+                var lowered = filtered.ToLower();
+                return lowered;
+            }
         }
 
         public void Stop()

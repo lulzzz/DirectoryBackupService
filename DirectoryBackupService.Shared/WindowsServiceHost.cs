@@ -1,5 +1,4 @@
-﻿using Autofac;
-using Autofac.Core;
+﻿using Autofac.Core;
 using DirectoryBackupService.Shared.Models;
 using System;
 using Topshelf;
@@ -13,7 +12,6 @@ namespace ConnelHooley.DirectoryBackupService.Shared
             string serviceName, 
             string displayName, 
             string description, 
-            string actorSystemName, 
             Func<HostConfigurator, (SourceSettings, TDestinationSettings)> settingsParser, 
             Func<TDestinationSettings, IModule> destinationIocModuleCreator) =>
                 (int) HostFactory.Run(x =>
@@ -21,7 +19,7 @@ namespace ConnelHooley.DirectoryBackupService.Shared
                     var (sourceSettings, destinationSettings) = settingsParser(x);
                     var destinationIocModule = destinationIocModuleCreator(destinationSettings);
                     var iocContainer = Ioc.Create(sourceSettings, destinationIocModule);
-                    Logs.AddToTopShelf(x);
+                    Logging.AddToTopShelf(x);
 
                     x.RunAsLocalSystem();
                     x.StartAutomatically();
@@ -30,8 +28,8 @@ namespace ConnelHooley.DirectoryBackupService.Shared
                     x.SetDescription(description);
                     x.Service<WindowsServiceInstance>(s =>
                     {
-                        s.ConstructUsing(hs => iocContainer.Resolve<WindowsServiceInstance>());
-                        s.WhenStarted(tc => tc.Start(actorSystemName, iocContainer));
+                        s.ConstructUsing(hs => new WindowsServiceInstance(hs, iocContainer));
+                        s.WhenStarted(tc => tc.Start());
                         s.WhenStopped(tc => tc.Stop());
                     });
                 });

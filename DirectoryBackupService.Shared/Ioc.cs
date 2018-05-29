@@ -13,7 +13,6 @@ namespace ConnelHooley.DirectoryBackupService.Shared
             var builder = new ContainerBuilder();
 
             builder.RegisterInstance(sourceSettings);
-            builder.RegisterType<WindowsServiceInstance>().AsSelf();
             builder.RegisterType<DirectoryActor>().AsSelf();
             builder.RegisterModule<NLogModule>();
             builder.RegisterModule(destinationModule);

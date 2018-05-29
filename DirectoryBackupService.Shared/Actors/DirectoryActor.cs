@@ -1,17 +1,18 @@
 ﻿using Akka.Actor;
-using Akka.Event;
 using ConnelHooley.DirectoryBackupService.Shared;
+using DirectoryBackupService.Shared.Models;
+using Newtonsoft.Json;
 using System;
 
 namespace DirectoryBackupService.Shared.Actors
 {
     class DirectoryActor : ReceiveActor
     {
-        public DirectoryActor()
+        private Akka.Event.ILoggingAdapter _logger = Logging.GetAkkaLogger(Context);
+
+        public DirectoryActor(SourceSettings sourceSettings)
         {
-            var akkaLog = Logs.GetAkkaLogger(Context);
-            akkaLog.Log(LogLevel.DebugLevel, nameof(akkaLog));
-            Console.ReadLine();
+            _logger.Debug(JsonConvert.SerializeObject(sourceSettings));
         }
     }
 }

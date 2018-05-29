@@ -3,7 +3,7 @@ using ConnelHooley.DirectoryBackupService.S3.Models;
 
 namespace ConnelHooley.DirectoryBackupService.S3
 {
-    internal class S3IocModule : Module
+    internal sealed class S3IocModule : Module
     {
         public static S3IocModule Create(AwsDestinationSettings settings) => 
             new S3IocModule(settings);

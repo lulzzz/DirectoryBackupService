@@ -1,12 +1,12 @@
 ﻿namespace DirectoryBackupService.Shared.Models
 {
-    internal class SourceSettings
+    internal sealed class SourceSettings
     {
         public SourceSettings(string directoryPath)
         {
             DirectoryPath = directoryPath;
         }
 
-        string DirectoryPath { get; }
+        public string DirectoryPath { get; }
     }
 }
