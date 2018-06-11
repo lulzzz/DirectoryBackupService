@@ -25,14 +25,13 @@ namespace ConnelHooley.DirectoryBackupService.Shared
         {
             _actorSystem = ActorSystem.Create(ParseActorSystemName(), Logging.GetAkkaLoggingConfig());
             var resolver = new AutoFacDependencyResolver(_iocContainer, _actorSystem);
-            _rootActor = _actorSystem.ActorOf(resolver.Create<DirectoryActor>());
+            _rootActor = _actorSystem.ActorOf(resolver.Create<SourceActor>(), "source");
 
             string ParseActorSystemName()
             {
                 var hyphonated = Regex.Replace(_hostSettings.ServiceName, @"[\s|_]+", "-");
-                var filtered = Regex.Replace(hyphonated, @"[^A-z0-9]", string.Empty);
-                var lowered = filtered.ToLower();
-                return lowered;
+                var filtered = Regex.Replace(hyphonated, "[^A-z0-9]", string.Empty);
+                return filtered.ToLower();
             }
         }
 
